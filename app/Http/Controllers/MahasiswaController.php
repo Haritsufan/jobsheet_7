@@ -107,22 +107,11 @@ class MahasiswaController extends Controller
      */
     public function destroy(string $Nim)
     {
-        // Temukan mahasiswa berdasarkan Nim
-    $mahasiswa = Mahasiswa::find($Nim);
-
-    // Periksa apakah mahasiswa ditemukan
-    if ($mahasiswa) {
-        // Hapus data mahasiswa
-        $mahasiswa->delete();
-
-        // Redirect ke halaman index dengan pesan sukses
-        return redirect()->route('mahasiswa.index')
-            ->with('success', 'Mahasiswa berhasil dihapus');
-    } else {
-        // Jika mahasiswa tidak ditemukan, redirect ke halaman yang sesuai
-        return redirect()->back()
-            ->with('error', 'Mahasiswa tidak ditemukan');
+        //
+        //fungsi eloquent untuk menghapus data
+        Mahasiswa::find($Nim)->delete();
+        return redirect()
+            ->route('mahasiswa.index')
+            ->with('success', 'Mahasiswa Berhasil Dihapus');
     }
-}
-
 }
