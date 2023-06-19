@@ -14,7 +14,7 @@ class AddEmailToMahasiswas extends Migration
     public function up()
     {
         Schema::table('mahasiswas', function (Blueprint $table) {
-            $table->string('Email')->nullable();
+            $table->string('Email')->nullable()->after('Nama');
         });
     }
 

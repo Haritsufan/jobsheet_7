@@ -14,7 +14,7 @@ class AddTanggalLahirToMahasiswas extends Migration
     public function up()
     {
         Schema::table('mahasiswas', function (Blueprint $table) {
-            $table->string('Tanggal_Lahir')->nullable();
+            $table->string('Tanggal_Lahir')->nullable()->after('Email');
         });
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Mahasiswa;
+use App\Models\kelas;
 use Illuminate\Http\Request;
 
 class MahasiswaController extends Controller
@@ -15,9 +16,11 @@ class MahasiswaController extends Controller
         $search = $request->input('search');
 
         // Query untuk mencari mahasiswa berdasarkan nama
-        $mahasiswas = Mahasiswa::where('Nama', 'LIKE', "%$search%")->get();
+        $mahasiswa = Mahasiswa::with('kelas')->get();
+        $mahasiswa = Mahasiswa::orderby('id', 'asc')->paginate(3);
 
-        return view('mahasiswa.index', compact('mahasiswas'));
+
+        return view('mahasiswa.index',['mahasiswa' => $mahasiswa]);
 
 
 
@@ -29,7 +32,8 @@ class MahasiswaController extends Controller
     public function create()
     {
         //
-        return view('mahasiswa.create');
+        $kelas = Kelas::all();
+        return view('mahasiswa.create',['kelas' => $kelas]);
     }
 
     /**
@@ -41,13 +45,34 @@ class MahasiswaController extends Controller
         $request->validate([
             'Nim' => 'required',
             'Nama' => 'required',
-            'Kelas' => 'required',
+            'kelas_id' => 'required',
             'Jurusan' => 'required',
             'No_Handphone' => 'required',
             'Email' => 'required',
             'Tanggal_Lahir' => 'required',
 
         ]);
+
+
+        $mahasiswa =new Mahasiswa;
+        $mahasiswa->nim = $request->get('Nim');
+        $mahasiswa->nama = $request->get('Nama');
+        $mahasiswa->jurusan = $request->get('Jurusan');
+        $mahasiswa->No_Handphone = $request->get('No_Handphone');
+        $mahasiswa->Email = $request->get('Email');
+        $mahasiswa->Tanggal_Lahir = $request->get('Tanggal_Lahir');
+
+        $mahasiswa->save();
+
+        $kelas = new Kelas;
+        $kelas->id= $request->get('Kelas');
+
+        $mahasiswa->kelas()->associate($kelas);
+        $mahasiswa->save();
+
+        return redirect()->route('mahasiswa.index')
+        ->with('succsess', 'Mahasiswa Berhasil Ditambahkan');
+
         //fungsi eloquent untuk menambah data
         Mahasiswa::create($request->all());
         //jika data berhasil ditambahkan, akan kembali ke halaman utama
